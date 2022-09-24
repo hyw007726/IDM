@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Wesley's lottery game</title>
+	<style type="text/css">
+		@keyframes slidein {
+			from  {opacity: 0;margin-left: 50vw}
+			to {opacity: 1;margin-left: 0}
+		}
+	</style>
+</head>
+<body>
+	<h1>Game of Seven</h1>
+	<h5>Rules:<br>1. One point for a digit 7. <br>2. Three points for a multiple of 7.<br> 3. Points from the last draw will be septupled
+	</h5>
+	<button id="play">Play</button><br>
+	<div id="container" style="margin-top: 1vh;display:flex;width:100vw;height:5vw"></div>
+	<h2>Your score:&nbsp<span id="score">0</span></h2>
+	<h2>Highest score:&nbsp<span id="hscore">0</span></h2>
+</body>
+<script type="text/javascript">
+	//define global variable: highest score and points
+	var hscore=0, points=0
+	//define a function that returns the number array
+	var	generateArray=function (){
+		var arr=[]
+    	while(arr.length<7){
+    	//generate seven random numbers
+    	let number=Math.floor(Math.random()*47+1)
+    	//avoid duplicate numbers
+        if(!arr.includes(number)){
+        arr.push(number)
+        }
+    }
+    //sort the array
+    arr.sort((a,b)=>a-b)
+    console.log(arr)
+    return arr
+}
+
+	//add a listener for the play button
+	document.getElementById("play").onclick=function(){
+		points=0
+		document.getElementById("container").innerHTML=""
+		document.getElementById("play").setAttribute("disabled", true)
+		document.getElementById("score").innerHTML=0
+	let array = generateArray()
+	for(var n=0;n<=array.length-1;n++){
+		let div=document.createElement("div")
+		div.id=n
+		let style="width:5vw;height:5vw;border-radius:50vw;margin-right:1vw;border:1px solid red;justify-content:center;align-items:center;display:flex;color:white;background-color:red;animation: 1.2s ease-out slidein;"
+		if(n==array.length-1){
+			div.style=style+"box-shadow:inset 0 0 0 5px white"
+		}else{
+			div.style=style
+		}
+		div.append(document.createTextNode(array[n]+" "))
+		let value=array[n], last=false
+		if(n==array.length-1){
+			last=true
+		}
+    	setTimeout(()=>{
+    		document.getElementById("container").append(div)
+    		console.log(value)
+    		if(last){
+    				switch(value){
+    			case 7:
+    			points=points+28;
+    			break;
+
+    			case 14:
+    			points=points+21
+    			break;
+
+    			case 17:
+    			points=points+7;
+    			break;
+
+    			case 21:
+    			points=points+21
+    			break;
+
+    			case 27:
+    			points+=7;
+    			break;
+
+    			case 28:
+    			points=points+21
+    			break;
+
+    			case 35:
+    			points=points+21
+    			break;
+
+    			case 37:
+    			points+=7
+    			break;
+
+    			case 42:
+    			points=points+21
+    			break;
+
+    			case 47:
+    			points+=7
+    			break;
+
+    			default:
+    			break;
+
+    		}
+    		}else{
+    				switch(value){
+    			case 7:
+    			points=points+4;
+    			break;
+
+    			case 14:
+    			points=points+3
+    			break;
+
+    			case 17:
+    			points++;
+    			break;
+
+    			case 21:
+    			points=points+3
+    			break;
+
+    			case 27:
+    			points++;
+    			break;
+
+    			case 28:
+    			points=points+3
+    			break;
+
+    			case 35:
+    			points=points+3
+    			break;
+
+    			case 37:
+    			points++
+    			break;
+
+    			case 42:
+    			points=points+3
+    			break;
+
+    			case 47:
+    			points++
+    			break;
+
+    			default:
+    			break;
+
+    		}
+    		}
+    	
+    		console.log(points)
+    		document.getElementById("score").innerHTML=points
+    		if(last){
+    			console.log(last)
+    			document.getElementById("play").removeAttribute("disabled")
+    			if(hscore<points){
+    				hscore=points
+    				document.getElementById("hscore").innerHTML=points
+    			}
+    		}
+
+    	},1000*(n+1))
+    	
+    }
+	}
+
+
+
+</script>
+</html>
