@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Wesley's currency converter</title>
+	<style type="text/css">
+		#mask {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 500%;
+		}
+		#euro {
+			width: 3em;
+			text-align: right;
+			font-size: 120%;
+			vertical-align: middle;
+		}
+		#select{
+			font-size: 150%;
+			vertical-align: middle;
+		}
+	</style>
+</head>
+<body>
+	<div id="mask" >Fetching data ...</div>
+	<div id="content" hidden>
+			<h1 >Date:<span id="date"></span></h1>
+	<h1 id="eur">Amount in Euro: &nbsp<input id="euro" type="text" value=1 autofocus name="" required></h1>
+	
+	<h1>Amount in &nbsp<select id="select"></select>: <span id="result"></span></h1>
+	<a href="https://github.com/hyw007726/IDM/blob/main/converter.html">Source code</a>
+	</div>
+
+</body>
+<script type="text/javascript">
+	var data,d,curCur="usd",curVal=1
+	Promise.all([fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur.json').then((res)=>res.json()),fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json').then((res)=>res.json())]).then(res=>{
+		document.getElementById("mask").remove()
+		document.getElementById("content").removeAttribute("hidden")
+		console.log(res)
+		document.getElementById("date").innerHTML=res[0].date;
+		for(var cur in res[0].eur){
+			let o = document.createElement("option")
+			o.innerHTML=res[1][cur]
+			o.value=cur
+			if(cur=="usd"){
+				o.selected=true
+				document.getElementById("result").innerHTML=res[0].eur[cur]
+				curCur="usd"
+				curVal=res[0].eur[cur]
+			}
+			document.getElementById("select").append(o)
+		}
+		
+		document.getElementById("euro").addEventListener("blur",(event)=>{
+			if(Number.isNaN(Number(event.target.value))){
+				alert("Not a number!")
+				document.getElementById("euro").value=1
+			document.getElementById("result").innerHTML=res[0].eur[curCur]
+			curVal=1
+			}else{
+				document.getElementById("euro").value=event.target.value
+				curVal=event.target.value
+
+				document.getElementById("result").innerHTML=res[0].eur[curCur]*event.target.value
+			}
+		})
+		document.getElementById("select").addEventListener("change",(event)=>{
+			curCur=event.target.value
+			document.getElementById("result").innerHTML=curVal*res[0].eur[event.target.value]
+		})
+		
+		})
+	
+
+</script>
+</html>
