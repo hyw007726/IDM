@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Wesley's Pong Game</title>
+	<style type="text/css">
+		#score {
+			width: 100vw;
+			text-align: center;
+			font-size: 300%;
+			position: absolute;
+		}
+		#container {
+			width: 50vw;
+			height: 30vw;
+			margin: 10vh auto;
+			background: gray;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#play {
+			font-size: 150%;
+		}
+	
+		#ball {
+			position: absolute;
+			width: 1vw;
+			height: 1vw;
+			border-radius: 50%;
+			box-shadow: 0 0 0 1em white;
+			z-index: 1;
+			display: none;
+			background-color: white;
+		}
+		.paddle {
+			width: 1vw;
+			height: 8vw;
+			border: 1px solid black;
+			box-sizing: border-box;
+			background-color: black;
+			position: absolute;
+			z-index: 2;
+			display: none;
+		}
+
+		#paddleRight {
+			height: 22vw;
+		}
+	</style>
+</head>
+<body>
+	<div id="score" hidden><span id="player1">10</span>:<span id="player2">10</span></div>
+	<div id="container">
+	<button id="play">Play</button>	
+	</div>
+	<div class="paddle" id="paddleLeft"></div>
+	<div class="paddle" id="paddleRight"></div>
+	<div id="ball"></div>
+	<div id="footer">Wesley's Pong Game <a >Source Code</a> </div>
+</body>
+<script type="text/javascript">
+	//get elements
+	var rect = document.getElementById("container").getBoundingClientRect(),
+	play=document.getElementById("play"),
+	score=document.getElementById("score"),
+	player1=document.getElementById("player1"),
+	player2=document.getElementById("player2"),
+	ball=document.getElementById("ball"),
+	paddleLeft=document.getElementById("paddleLeft"),
+	paddleRight=document.getElementById("paddleRight")
+
+	//initialize speed and score
+	var p1=10, p2=10
+
+	//play button listener
+	addEventListener('keyup',(e)=>{
+		console.log(e.keyCode)
+	if(e.keyCode==32){
+		document.getElementById("play").click()
+	}
+
+	})
+document.getElementById("play").onclick=()=>{
+	var speed=10
+	//hide play button and show score
+	play.setAttribute("hidden",true)
+	score.removeAttribute("hidden")
+	//initialize paddles
+	paddleLeft.style.display="block"
+	paddleRight.style.display="block"
+	var leftRect = paddleLeft.getBoundingClientRect(),
+	rightRect=paddleRight.getBoundingClientRect()
+	paddleLeft.style.left=(rect.left-leftRect.width)+'px'
+	paddleLeft.style.top=(rect.top+rect.height/2-leftRect.height/2)+'px'
+	paddleRight.style.left=(rect.right)+'px'
+	paddleRight.style.top=(rect.top+rect.height/2-leftRect.height/2)+'px'
+	
+
+	// add mouse and keyboard control
+	var keyTimer
+	addEventListener('keydown',(e)=>{
+		// console.log(e.keyCode)
+		clearInterval(keyTimer)
+		if(e.keyCode==38){
+			keyTimer=setInterval(()=>{
+				let lRect=paddleLeft.getBoundingClientRect()
+				if(lRect.top>rect.top){
+					paddleLeft.style.top=(lRect.top-3)+'px'
+				}
+				
+			},16)
+		}
+		if(e.keyCode==40){
+			keyTimer=setInterval(()=>{
+				let lRect=paddleLeft.getBoundingClientRect()
+				if(lRect.bottom<rect.bottom){
+					paddleLeft.style.top=(lRect.top+3)+'px'
+				}
+			},16)
+		}
+	})
+	addEventListener('keyup',(e)=>{
+if(e.keyCode==38||e.keyCode==40){
+	clearInterval(keyTimer)
+}
+	})
+	addEventListener('mousemove',(e)=>{
+			let lRect = paddleLeft.getBoundingClientRect(),
+	rRect=paddleRight.getBoundingClientRect()
+		if(e.y<rect.top){
+			paddleLeft.style.top=rect.top+'px'
+		}else if(e.y>rect.bottom){
+			paddleLeft.style.top=rect.bottom-lRect.height+'px'
+		}else{
+			paddleLeft.style.top=(e.y-lRect.height/2)+'px'
+		}
+	
+	})
+
+	//initialize ball
+	ball.style.display="block"
+	ball.style.top=(rect.top+rect.height*(Math.random()))+'px'
+	ball.style.left=(rect.left+rect.width/2)+'px'
+	var angle=Math.PI/4*(Math.random()*2-1)+Math.PI*(Math.random()>0.5?1:0)
+
+	//begin animation
+	var paddleRightUp=true, bounceTimes=0
+	var timer = setInterval(()=>{
+		let x=ball.getBoundingClientRect().x,
+		y=ball.getBoundingClientRect().y
+let lRect = paddleLeft.getBoundingClientRect(),
+	rRect=paddleRight.getBoundingClientRect()
+	//set a flag to control right paddle's direction and add random angle
+		if(rRect.top<rect.top){
+			paddleRightUp=false
+		}
+		if(rRect.bottom>rect.bottom){
+			paddleRightUp=true
+		}
+			paddleRight.style.top=paddleRightUp?((rRect.top-20)+'px'):((rRect.top+20)+'px')
+		
+		//bounce against top and bottom borders
+		if(y<rect.top){
+			angle=Math.PI*2-angle
+			y=rect.top
+		}
+		if(y>rect.bottom){
+			angle=Math.PI*2-angle
+			y=rect.bottom
+		}
+
+		//bounce to left border
+		if(x<rect.left){
+
+			//fail or succeed to catch the ball
+			if(y<lRect.top||y>lRect.bottom){
+			ball.style.display="none"
+			clearInterval(timer)
+			play.removeAttribute("hidden")
+			p1--
+			player1.innerHTML=p1
+			if(p1==0){
+				alert('You lose!')
+				p1=10
+				p2=10
+				player1.innerHTML=p1
+				player2.innerHTML=p2
+			}
+			}else{
+			angle=Math.PI-angle
+			x=rect.left
+			speed*=1.1
+			}
+	
+		}
+
+		//bounce to the right border
+		if(x>rect.right){
+			//increase the difficulty by ensuring there are at least 1 bounces off the right paddle
+			if(bounceTimes<1){
+					angle=Math.PI-angle
+			//add some angle for the moving right paddle
+			if(paddleRightUp){
+				angle+=0.3
+			}else{
+				angle-=0.3
+			}
+			speed*=1.1
+			x=rect.right
+			bounceTimes++
+		}else if(y<rRect.top||y>rRect.bottom){
+			ball.style.display="none"
+			clearInterval(timer)
+			play.removeAttribute("hidden")
+			bounceTimes=0
+			p2--
+			player2.innerHTML=p2
+			if(p2==0){
+				alert('You win!')
+				p1=10
+				p2=10
+				player1.innerHTML=p1
+				player2.innerHTML=p2
+			}
+			}else{
+			angle=Math.PI-angle
+			if(paddleRightUp){
+				angle+=0.3
+			}else{
+				angle-=0.3
+			}
+			x=rect.right
+			speed*=1.1
+			bounceTimes++
+			}
+		}
+		angle=angle%(Math.PI*2)
+		//make sure the angle is not too acute
+
+		ball.style.top=(y+speed*Math.sin(angle))+'px'
+		ball.style.left=(x+speed*Math.cos(angle))+'px'
+		
+},16)
+}
+
+</script>
+</html>
