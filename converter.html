@@ -113,7 +113,7 @@ document.getElementById("play").onclick=()=>{
 			keyTimer=setInterval(()=>{
 				let lRect=paddleLeft.getBoundingClientRect()
 				if(lRect.top>rect.top){
-					paddleLeft.style.top=(lRect.top-3)+'px'
+					paddleLeft.style.top=(lRect.top-5)+'px'
 				}
 				
 			},16)
@@ -122,7 +122,7 @@ document.getElementById("play").onclick=()=>{
 			keyTimer=setInterval(()=>{
 				let lRect=paddleLeft.getBoundingClientRect()
 				if(lRect.bottom<rect.bottom){
-					paddleLeft.style.top=(lRect.top+3)+'px'
+					paddleLeft.style.top=(lRect.top+5)+'px'
 				}
 			},16)
 		}
