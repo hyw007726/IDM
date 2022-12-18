@@ -1,0 +1,58 @@
+#score {
+			width: 100vw;
+			text-align: center;
+			font-size: 300%;
+			position: absolute;
+		}
+		#container {
+			width: 50vw;
+			height: 30vw;
+			margin: 10vh auto;
+			background: gray;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#play {
+			font-size: 150%;
+		}
+		#bonus {
+			position: absolute;
+			width: 5em;
+			height: 5em;
+			border-radius: 50%;
+			z-index: 1;
+			background-color: white;
+			justify-content: center;
+			align-items: center;
+			display: none;
+		}
+		.ball {
+			position: absolute;
+			width: 1vw;
+			height: 1vw;
+			border-radius: 50%;
+			box-shadow: 0 0 0 1em white;
+			z-index: 1;
+			background-color: white;
+		}
+		.paddle {
+			width: 1vw;
+			height: 8vw;
+			border: 1px solid black;
+			box-sizing: border-box;
+			background-color: black;
+			position: absolute;
+			z-index: 2;
+			display: none;
+		}
+
+		#paddleRight {
+			height: 18vw;
+		}
+		#footer {
+			top: 35vw;
+			width: 100vw;
+			text-align: center;
+			font-size: 120%;
+		}
